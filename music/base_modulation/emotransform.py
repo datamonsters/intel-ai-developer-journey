@@ -5,9 +5,10 @@ Alexey Kalinin, 2017
 Requirements: python3, music21
               docker - for running BachBot
 
-music21._version.__version__
-'4.1.0'
-pip3 install --upgrade music21
+In case of update music21 (if needed):
+              pip3 install --upgrade music21
+              check:
+              music21._version.__version__ '4.1.0'
 
 Using:
 - call from console:
@@ -26,6 +27,7 @@ import uuid
 import argparse
 import music21
 import subprocess
+import random
 import xml.etree.ElementTree as et
 
 EMOTIONS = (
@@ -38,14 +40,35 @@ EMOTIONS = (
     'DETERMINATION'
     )
 
-remote_folder = '/root/bachbot/emo_src/'
+REMOTE_FOLDER = '/root/bachbot/emo_src/'
+CHECKPOINT_FOLDER = '/root/bachbot/scratch/checkpoints/trained_model/'
+SLOWED_BPM = 80
+
+# bachBot checkpoints
+NN_CHECKPOINTS = []
 
 def initBachBot():
     # ensure that bachbot image started
     subprocess.Popen(['docker', 'start', 'bachbot']).wait()
 
     # make target folder on start
-    subprocess.Popen(['docker', 'exec', 'bachbot', 'mkdir', '-p', remote_folder]).wait()
+    subprocess.Popen(['docker', 'exec', 'bachbot', 'mkdir', '-p', REMOTE_FOLDER]).wait()
+
+    # get checkpoints list
+    global CHECKPOINT_FOLDER
+    pipe = subprocess.Popen('docker exec bachbot ls -1 \
+                            '+CHECKPOINT_FOLDER+' \
+                            | grep checkpoint_[3-5][1-9] | grep .t7', stdout=subprocess.PIPE, shell=True)
+    res = pipe.communicate()[0]
+    pipe.wait()
+
+    global NN_CHECKPOINTS
+    NN_CHECKPOINTS = res.decode('utf-8').split('\n')[:-1]
+    if len(NN_CHECKPOINTS) == 0:
+        print('No BachBot checkpoints found!')
+        print('Please check that BachBot is trained and Docker folder with checkpoints is {0}'.format(CHECKPOINT_FOLDER))
+        quit()
+
 
 # init BachBot on import
 initBachBot()
@@ -78,7 +101,7 @@ def transform(filename, targetEmotion, targetDir='.'):
         currentScale = music21.scale.MinorScale(src_key.tonic.name)
 
     # ANXIETY
-    if targetEmotion == 'ANXIETY':
+    if targetEmotion == 'ANXIETY' and src_key.mode == 'major':  # do not apply degree change for minor source melody
         notes = part.flat.getElementsByClass(music21.note.Note)
         for currNote in notes:
             currDegree = currentScale.getScaleDegreeFromPitch(currNote)
@@ -90,11 +113,18 @@ def transform(filename, targetEmotion, targetDir='.'):
                 #currNote.offset = currNote.offset - 0.3
                 #print('Updated ', currNote)
 
+        src_key = part.analyze('key')
+        transpose_interval = music21.interval.Interval(src_key.tonic, music21.pitch.Pitch('a'))
+        part.transpose(transpose_interval, inPlace=True)
+
+
     # SADNESS
-    if targetEmotion == 'SADNESS':
+    if targetEmotion == 'SADNESS' and src_key.mode == 'major':  # do not apply degree change for minor source melody
+        #slowing tempo
         #part.scaleOffsets(2.0).scaleDurations(2.0)
+        #tempoMark must be present in source xml files!
         tempo = part.flat.getElementsByClass(music21.tempo.MetronomeMark)
-        tempo[0].setQuarterBPM(60)
+        tempo[0].setQuarterBPM(SLOWED_BPM)
 
         notes = part.flat.getElementsByClass(music21.note.Note)
         for currNote in notes:
@@ -104,10 +134,16 @@ def transform(filename, targetEmotion, targetDir='.'):
             if currDegree in minorsDegrees:  # completely change to minor - halftone lower III, VI and VII degree
                 currNote.transpose(-1, inPlace=True)
 
+        src_key = part.analyze('key')
+        transpose_interval = music21.interval.Interval(src_key.tonic, music21.pitch.Pitch('a'))
+        part.transpose(transpose_interval, inPlace=True)
+
     # AWE
     if targetEmotion == 'AWE':
+        #slowing tempo
+        #tempoMark must be present in source xml files!
         tempo = part.flat.getElementsByClass(music21.tempo.MetronomeMark)
-        tempo[0].setQuarterBPM(60)
+        tempo[0].setQuarterBPM(SLOWED_BPM)
         #part.scaleOffsets(1.8, inPlace=True)
         #part.scaleDurations(1.8, inPlace=True)
         #part.augmentOrDiminish(2, inPlace=True)
@@ -211,27 +247,31 @@ def transform(filename, targetEmotion, targetDir='.'):
     return newFileName, targetDir
 
 
-def nn_harmonize(filename, targetDir, targetEmotion):
+def nn_harmonize(src_filename, targetDir, targetEmotion):
     '''Perform neural network harmonization via BachBot. Output - transformed midi-file '''
 
-    (_, filename) = os.path.split(filename)
+    (_, filename) = os.path.split(src_filename)
     (filename_stripped, file_format) = filename.split('.')
 
     #if (file_format == 'midi'): subprocess.Popen(['musescore', filename, '-o',filename_stripped + '.xml']).wait()
 
     # copy file to bachbot docker instance
-    subprocess.Popen(['docker', 'cp', targetDir + '/' + filename, 'bachbot:' + remote_folder + filename]).wait()
+    subprocess.Popen(['docker', 'cp', targetDir + '/' + filename, 'bachbot:' + REMOTE_FOLDER + filename]).wait()
+
+    # random select of checkpoiont
+    global NN_CHECKPOINTS
+    global CHECKPOINT_FOLDER
+    checkpoint_filename = random.choice(NN_CHECKPOINTS)
+    # or set best one - checkpoint_5300.t7
+    print('Randomly selected checkpoint', checkpoint_filename)
 
     #run BachBot harmonization
-    checkpoint_folder = '/root/bachbot/scratch/checkpoints/trained_model/'
-    #TODO: random select of checkpoiont (read list from bachbot docker)
-    #NOTE: remote file name must be without extension - JOY.xml -> JOY , due some bash/zsh mess
-    checkpoint_filename = 'checkpoint_5000.t7'
+    #NOTE: remote file name must be without extension (filename_stripped) - JOY.xml -> JOY , due some bash/zsh mess
     harm_args = [
                    'docker', 'exec', '-ti', 'bachbot', 'bash',
                    '/root/bachbot/scripts/harmonize_melody.zsh',
-                   remote_folder + filename_stripped,
-                   checkpoint_folder + checkpoint_filename
+                   REMOTE_FOLDER + filename_stripped,
+                   CHECKPOINT_FOLDER + checkpoint_filename
                 ]
     subprocess.Popen(harm_args).wait()
 
@@ -242,11 +282,11 @@ def nn_harmonize(filename, targetDir, targetEmotion):
 
     # remove old decode.xml
     subprocess.Popen(['docker', 'exec', 'bachbot', 'rm', '/root/bachbot/scratch/out/decode.xml']).wait()
-    # remove related files from remote_folder, * not work via docker call so remove explicitly by name
+    # remove related files from REMOTE_FOLDER, * not work via docker call so remove explicitly by name
     rm_list = [
-                remote_folder + filename_stripped + '-harm.utf',
-                remote_folder + filename_stripped + '.utf',
-                remote_folder + filename_stripped + '.xml'
+                REMOTE_FOLDER + filename_stripped + '-harm.utf',
+                REMOTE_FOLDER + filename_stripped + '.utf',
+                REMOTE_FOLDER + filename_stripped + '.xml'
               ]
     for f in rm_list: subprocess.Popen(['docker', 'exec', 'bachbot', 'rm', f])
 
@@ -276,9 +316,13 @@ def nn_harmonize(filename, targetDir, targetEmotion):
     slowed_transformations = ['AWE', 'SADNESS']
     if (targetEmotion in slowed_transformations):
         measure_for_bpm = score.recurse().getElementsByClass(music21.stream.Measure)[0]
-        measure_for_bpm.insert(0, music21.tempo.MetronomeMark('', 80))
+        measure_for_bpm.insert(0, music21.tempo.MetronomeMark('', SLOWED_BPM))
 
     score.write('midi', midi_file)
+
+    #remove transitional files (comment it for debug)
+    os.remove(musicXML_file)
+    os.remove(os.path.join(targetDir,src_filename))
 
     #NOTE: debug convert to XML->MIDI via musescore
     #subprocess.Popen(['musescore', musicXML_file, '-o', midi_file]).wait()

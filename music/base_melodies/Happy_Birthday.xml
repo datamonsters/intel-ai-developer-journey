@@ -77,6 +77,15 @@
           <line>4</line>
           </clef>
         </attributes>
+      <direction placement="above">
+        <direction-type>
+          <metronome parentheses="no">
+            <beat-unit>quarter</beat-unit>
+            <per-minute>120</per-minute>
+            </metronome>
+          </direction-type>
+        <sound tempo="120"/>
+        </direction>
       <note default-x="75.75" default-y="-5.00" dynamics="67.78">
         <pitch>
           <step>G</step>

@@ -64,15 +64,21 @@ Edit HOST and PORT vars according to your network
 HOST='192.168.1.45'
 PORT=8082
 
+# path to source melodies folder
 SRC_MIDI_PATH='../base_melodies'
+# path to transformed files folder, also used in links
 TARGET_MIDI_PATH='./transformed'
+# time until delete old files
+DELETE_TIME_SEC=120
 
 import threading
 import string
 import random
 import os
 import glob
+import time
 import base64
+
 from urllib import parse
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
@@ -181,10 +187,24 @@ def runWebServer():
     except KeyboardInterrupt:
         httpd.server_close()
 
+
+def cleanUp():
+    threading.Timer(DELETE_TIME_SEC, cleanUp).start()
+
+    print('clean up...')
+    now = time.time()
+    for midi_file_name in glob.glob1(TARGET_MIDI_PATH, '*.mid'):
+        fullpath = os.path.join(TARGET_MIDI_PATH, midi_file_name)
+        if (now - os.stat(fullpath).st_mtime > DELETE_TIME_SEC):
+            os.remove(fullpath)
+
+
 if __name__ == "__main__":
     MELODIES = glob.glob1(SRC_MIDI_PATH, '*.xml')
     print(MELODIES)
+
     if (not os.path.exists(TARGET_MIDI_PATH)): os.makedirs(TARGET_MIDI_PATH)
+    cleanUp()
     try:
         webThread = threading.Thread(target=runWebServer)
         webThread.start()

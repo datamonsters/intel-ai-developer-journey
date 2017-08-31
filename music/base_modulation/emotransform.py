@@ -288,7 +288,7 @@ def nn_harmonize(src_filename, targetDir, targetEmotion):
                 REMOTE_FOLDER + filename_stripped + '.utf',
                 REMOTE_FOLDER + filename_stripped + '.xml'
               ]
-    for f in rm_list: subprocess.Popen(['docker', 'exec', 'bachbot', 'rm', f])
+    for f in rm_list: subprocess.Popen(['docker', 'exec', 'bachbot', 'rm', f]).wait()
 
 
     #patching musicXML file! -  bachBot removes midi-instrument element,

@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 
-MAINTAINER Nik Spirin <nspirin@datamonsters.co>
+MAINTAINER Nik Spirin (@spirinus)
 
 RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
     build-essential \

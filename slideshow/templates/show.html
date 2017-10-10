@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head prefix="og: http://ogp.me/ns#">
+		<title>Slideshow with AI-generated music</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="{{url_for('css_static', filename='style.css')}}">
+		<link rel="stylesheet" href="{{url_for('css_static', filename='simplegrid.css')}}">
+
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width initial-scale=1 maximum-scale=1">
+		<meta name="description" content="I've made a slideshow with AI-generated music! Look it here!">
+		<meta name="keywords" content="machine learning, ai, data science, data monsters">
+		<meta property="og:image" content="{{url_for('data_static', filename=session_name+'/1.jpg')}}">
+		<meta property="og:image:type" content="image/png">
+		<meta property="og:type" content="website">
+		<meta property="og:title" content="Slideshow with AI generated music">
+		<meta property="og:description" content="I've made a slideshow with AI-generated music! Look it here!">
+		 <meta property="og:url" content="https://lab.datamonsters.co/slideshow-music/"> 
+		<meta property="og:site_name" content="Slideshow with AI-generated music">
+		 <meta property="og:see_also" content="https://lab.datamonsters.co/slideshow-music/"> 
+		<meta name="twitter:card" content="summary_large_image">
+		<meta name="twitter:site" content="@data_monsters">
+		<meta name="twitter:creator" content="@data_monsters">
+		<meta name="twitter:title" content="Slideshow with AI generated music">
+		<meta name="twitter:description" content="I've made a slideshow with AI-generated music! Look it here!">
+		<meta name="twitter:image" content="{{url_for('data_static', filename=session_name+'/1.jpg')}}">
+		<link rel="stylesheet" href="{{url_for('css_static', filename='slideshow.css')}}">
+	</head>
+	<body>
+		<input id="music1" type="hidden" value="{{url_for('data_static', filename=session_name+'/1.mid')}}" />
+		<input id="music2" type="hidden" value="{{url_for('data_static', filename=session_name+'/2.mid')}}" />
+		<input id="music3" type="hidden" value="{{url_for('data_static', filename=session_name+'/3.mid')}}" />
+		<input id="music4" type="hidden" value="{{url_for('data_static', filename=session_name+'/4.mid')}}" />
+		<input id="music5" type="hidden" value="{{url_for('data_static', filename=session_name+'/5.mid')}}" />
+		
+		</script>
+		<script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
+
+	<div class="flex-container page-show">
+		<div class="headtext">
+			Slideshow powered by AI
+		</div>
+
+		<!-- <h1>your session is {{session_name}}</h1>  -->
+
+		<div  class="slider" id="main-slider">
+			<div class="slider-wrapper">
+				<img src="{{url_for('data_static', filename=session_name+'/1.jpg')}}" class="slide"/>
+				<img src="{{url_for('data_static', filename=session_name+'/2.jpg')}}" class="slide"/>
+				<img src="{{url_for('data_static', filename=session_name+'/3.jpg')}}" class="slide"/>
+				<img src="{{url_for('data_static', filename=session_name+'/4.jpg')}}" class="slide"/>
+				<img src="{{url_for('data_static', filename=session_name+'/5.jpg')}}" class="slide"/> 
+			</div> 
+			<!-- <div class=""></div> -->
+			<script type="text/javascript" src="{{url_for('js_static', filename='slideshow.js')}}"></script>
+		</div>
+			<button class="playpause controls " id="playbt"></button>
+		
+		<script src='/slideshow-music/js/midi.js'></script>
+
+		<!-- AddToAny BEGIN -->
+		 <div class="social-buttons">
+			<div class="a2a_kit a2a_kit_size_32 a2a_default_style" 
+					data-a2a-title="Look at the slideshow I made!" data-a2a-linkname="Look at the slideshow I made!">
+				<a class="a2a_button_facebook"></a>
+				<a class="a2a_button_twitter"></a>
+				<a class="a2a_button_google_plus"></a>
+			</div>
+		</div>
+		<script async src="https://static.addtoany.com/menu/page.js"></script> 
+		<!-- AddToAny END -->
+
+		<br />
+		<a href="{{url_for('index')}}" class="another">Generate another slideshow</a>
+	</div>	
+	</body>
+</html>

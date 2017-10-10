@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Slideshow with AI-generated music</title>
+		<link rel="stylesheet" href="{{url_for('css_static', filename='style.css')}}">
+		<link rel="stylesheet" href="{{url_for('css_static', filename='simplegrid.css')}}">
+	</head>
+	<body>
+		<input id="session_id" type="hidden" value="{{ session_name }}" />
+
+		<div class="page-container">
+			<div class="flex-container">
+				<div id="headtext">
+					A movie making app powered by AI
+					<div id="subheadtext">
+						We extract emotions from the uploaded images and<br>generate a computer melody matching these emotions.
+					</div>
+				</div>
+
+
+				<!-- <div id="droparea2" class="droparea"> -->
+					<!-- <form action="/upload-target" class="dropzone dz-clickable">  -->
+					<!-- </form>  -->
+				<!-- </div> -->
+
+		
+ 		
+				<div class="grid"> 
+
+					<div class="col-1-5 photoplace">
+						<div class="active-zone--hint">
+							<div class="label-head" id="uploadHint1">+ Upload image</div>
+						</div>
+						<div class="previewsContainer" id="previewsContainer1"></div>
+						<div id="droparea1" class="droparea"></div>
+					</div>
+
+					<div class="col-1-5 photoplace">
+						<div class="active-zone--hint">
+							<div class="label-head" id="uploadHint2">+ Upload image</div>
+						</div>
+						<div class="previewsContainer" id="previewsContainer2"></div>
+						<div id="droparea2" class="droparea"></div>
+					</div>
+
+					<div class="col-1-5 photoplace">
+						<div class="active-zone--hint">
+							<div class="label-head" id="uploadHint3">+ Upload image</div>
+						</div>
+						<div class="previewsContainer" id="previewsContainer3"></div>
+						<div id="droparea3" class="droparea"></div>
+					</div>
+
+					<div class="col-1-5 photoplace">
+						<div class="active-zone--hint">
+							<div class="label-head" id="uploadHint4">+ Upload image</div>
+						</div>
+						<div class="previewsContainer" id="previewsContainer4"></div>
+						<div id="droparea4" class="droparea"></div>
+					</div>
+
+					<div class="col-1-5 photoplace-last photoplace">
+						<div class="active-zone--hint">
+								<div class="label-head" id="uploadHint5">+ Upload image</div>
+								<!-- <div class="label-subhead">Up to 1MB</div>  -->
+						</div>
+						<div class="previewsContainer" id="previewsContainer5"></div>
+						<div id="droparea5" class="droparea"></div>
+					</div>
+				</div>
+
+				<div class="btn-block">
+					<div id="fileSubmit" class="btn-disabled">
+						<!-- off style btn-diabled when 5 fotos collected -->
+						<div id="spinner" class="spinner displayno">
+							<!-- off style displayno to show spinner -->
+							<img class="spinner-img" src="static/spinner.svg">
+						</div>
+						<div id="btn-aption" class="btn-text">
+							Generate Slideshow
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+			
+		<script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
+		<script type="text/javascript" src="{{url_for('js_static', filename='dropzone.js')}}"></script>
+		<script type="text/javascript" src="{{url_for('js_static', filename='upload-app.js')}}"></script>
+	</body>
+</html>

@@ -213,7 +213,7 @@ class PrefixMiddleware(object):
             return ["This url does not belong to the app.".encode()]
 
 
-app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix='/slideshow-music')
+app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix='')
 
 if __name__ == '__main__':
     app.jinja_env.auto_reload = True

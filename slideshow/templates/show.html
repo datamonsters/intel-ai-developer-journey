@@ -25,6 +25,14 @@
 		<meta name="twitter:description" content="I've made a slideshow with AI-generated music! Look it here!">
 		<meta name="twitter:image" content="{{url_for('data_static', filename=session_name+'/1.jpg')}}">
 		<link rel="stylesheet" href="{{url_for('css_static', filename='slideshow.css')}}">
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-71721810-21"></script>
+		<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'UA-71721810-21');
+		</script>
 	</head>
 	<body>
 		<input id="music1" type="hidden" value="{{url_for('data_static', filename=session_name+'/1.mid')}}" />

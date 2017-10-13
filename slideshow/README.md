@@ -2,7 +2,7 @@
 
 ## Idea
 The goal of applicaion is to show users that AI tecnologies is not about soulless machines. Let's help people share their emotions. All of you have a lot of photos envokeing emotions that can be shared by means of music. 
-Looking ahead, you can find running application here: [lab.datamonsters.co/slideshow-music/](https://lab.datamonsters.co/slideshow-music/)
+Looking ahead, you can find running application here: [slideshow-music.lab.datamonsters.co](https://slideshow-music.lab.datamonsters.co/)
 
 ## Defining User Stories
 Let's write down userstories covering future application:
@@ -88,4 +88,4 @@ pip install -r requirements.txt
 export FLASK_APP=app
 flask run
 ```
-Then open in your browser http://localhost:5000/slideshow-music
+Then open in your browser http://localhost:5000/

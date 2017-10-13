@@ -73,7 +73,7 @@ Slideshow implementations can be found on CodePan. [Here is](https://codepen.io/
 ## Deployment
 You can get full source code of the app [here](https://github.com/datamonsters/intel-ai-developer-journey/tree/master/slideshow). Or just checkout it 
 ```bash
-git checkout git@github.com:datamonsters/intel-slideshow-music.git
+git checkout git@github.com:datamonsters/intel-ai-developer-journey.git
 cd intel-ai-developer-journey/slideshow
 ```
 Then you should replace urls of music and emotions services in app.py with your services urls.

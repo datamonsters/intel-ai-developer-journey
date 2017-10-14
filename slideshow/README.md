@@ -83,7 +83,6 @@ EMOTIONS_SERVICE_URL = 'http://13.90.212.221:9000/predict'
 ```
 To launch the server just type
 ```bash
-cd intel-slideshow-music
 pip install -r requirements.txt
 export FLASK_APP=app
 flask run

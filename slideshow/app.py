@@ -117,10 +117,15 @@ def generate_music(emotion, session, num):
 
 def get_emotion(file_path):
     image_file = {'data': ('x.jpg', open(file_path, 'rb'))}
-    r = requests.post(EMOTIONS_SERVICE_URL, files=image_file)
-    data = json.loads(r.text)
-    v = data[0][0]
-    print data
+    try:
+        r = requests.post(EMOTIONS_SERVICE_URL, files=image_file)
+        data = json.loads(r.text)
+        v = data[0][0]
+        print data
+    except:
+        vs = ['Positive', 'Negative']
+        v = random.choice(vs)
+        print 'randomly ' + v
     positive = ['ANXIETY', 'AWE', 'JOY']
     negative = ['SADNESS', 'DETERMINATION']
     if v == 'Negative' :

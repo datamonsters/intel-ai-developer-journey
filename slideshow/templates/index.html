@@ -5,6 +5,14 @@
 		<title>Slideshow with AI-generated music</title>
 		<link rel="stylesheet" href="{{url_for('css_static', filename='style.css')}}">
 		<link rel="stylesheet" href="{{url_for('css_static', filename='simplegrid.css')}}">
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-71721810-21"></script>
+		<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'UA-71721810-21');
+		</script>
 	</head>
 	<body>
 		<input id="session_id" type="hidden" value="{{ session_name }}" />
@@ -14,7 +22,7 @@
 				<div id="headtext">
 					A movie making app powered by AI
 					<div id="subheadtext">
-						We extract emotions from the uploaded images and<br>generate a computer melody matching these emotions.
+						We extract emotions from the uploaded images and<br>generate a computer melody matching these emotions.<br />It may take about a minute.
 					</div>
 				</div>
 
